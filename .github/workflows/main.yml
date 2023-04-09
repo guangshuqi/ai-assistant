@@ -41,6 +41,7 @@ jobs:
         HOST: ${{ secrets.EC2_HOST }}
       run: |
         echo "$PRIVATE_KEY" > private_key.pem
+        echo "discord token: ${{ secrets.DISCORD_BOT_TOKEN }}"
         chmod 600 private_key.pem
         ssh -i private_key.pem ec2-user@$HOST "mkdir -p /home/ec2-user/ai-assistant"
         scp -i private_key.pem -r * ec2-user@$HOST:/home/ec2-user/ai-assistant
