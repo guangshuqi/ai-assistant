@@ -25,6 +25,11 @@ jobs:
 
     # - name: Run tests
     #   run: pytest # Replace this with your test command or script
+    - name: Add EC2 instance to known_hosts
+      run: |
+        mkdir -p ~/.ssh
+        echo "18.218.13.168 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICJVMq9yKl2O9R3vdCAVEFGO2JjH9LHDK3Cu1gv9fSu9" >> ~/.ssh/known_hosts
+        chmod 600 ~/.ssh/known_hosts
 
     - name: Deploy to AWS EC2
       if: github.ref == 'refs/heads/main' # Only deploy if on the main branch
