@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set environment variables on the EC2 instance
-echo "export ENVIRONMENT=production" >> ~/.bashrc
+echo "export ENVIRONMENT=${ENVIRONMENT}" >> ~/.bashrc
 echo "export OPENAI_API_KEY=${OPENAI_API_KEY}" >> ~/.bashrc
 echo "export DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}" >> ~/.bashrc
 
