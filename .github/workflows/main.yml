@@ -39,5 +39,5 @@ jobs:
       run: |
         echo "$PRIVATE_KEY" > private_key.pem
         chmod 600 private_key.pem
-        scp -i private_key.pem -r * ec2-user@$HOST:/home/ec2-user/ai-assistant
+        scp -i private_key.pem -r ./* ec2-user@$HOST:/home/ec2-user/ai-assistant
         ssh -i private_key.pem ec2-user@$HOST 'bash -s' < deploy.sh
