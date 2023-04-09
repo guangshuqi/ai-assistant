@@ -1,0 +1,38 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # - name: Run tests
+    #   run: pytest # Replace this with your test command or script
+
+    - name: Deploy to AWS EC2
+      if: github.ref == 'refs/heads/main' # Only deploy if on the main branch
+      env:
+        PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        HOST: ${{ secrets.EC2_HOST }}
+      run: |
+        echo "$PRIVATE_KEY" > private_key.pem
+        chmod 600 private_key.pem
+        scp -i private_key.pem -r . ec2-user@$HOST:/home/ec2-user/ai-assistant
+        ssh -i private_key.pem ec2-user@$HOST 'bash -s' < deploy.sh
