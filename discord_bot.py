@@ -5,9 +5,16 @@ from discord import Intents
 from discord.ext import commands
 from dotenv import load_dotenv
 
-load_dotenv()
-TOKEN = os.getenv("DISCORD_BOT_TOKEN")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+environment = os.environ.get("ENVIRONMENT")
+
+if environment == "production":
+    TOKEN = os.environ["OPENAI_API_KEY"]
+    OPENAI_API_KEY = os.environ["DISCORD_BOT_TOKEN"]
+else:
+    load_dotenv()
+    TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 intents = Intents.default()
 intents.message_content = True
