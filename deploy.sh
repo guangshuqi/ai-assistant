@@ -1,4 +1,7 @@
 #!/bin/bash
+# Install dependencies
+sudo yum update -y
+sudo yum install -y python3
 
 # Set environment variables on the EC2 instance
 echo "export ENVIRONMENT=${ENVIRONMENT}" >> ~/.bashrc
@@ -18,5 +21,6 @@ BOT_SCRIPT="discord_bot.py"
 
 # Go to the bot directory and restart the bot
 cd $BOT_DIRECTORY
+pip3 install --user -r requirements.txt
 pkill -f $BOT_SCRIPT
 nohup python3 $BOT_SCRIPT &
