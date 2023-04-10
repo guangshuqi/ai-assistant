@@ -44,5 +44,5 @@ jobs:
         chmod 600 private_key.pem
         ssh -i private_key.pem ec2-user@$HOST "mkdir -p /home/ec2-user/ai-assistant"
         scp -i private_key.pem -r * ec2-user@$HOST:/home/ec2-user/ai-assistant
-        ssh -i private_key.pem ec2-user@$HOST 'bash -s' < deploy.sh "${OPENAI_API_KEY}" "${DISCORD_BOT_TOKEN}"
+        ssh -i private_key.pem ec2-user@$HOST 'bash -s' < deploy.sh
 
