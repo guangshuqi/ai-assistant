@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 environment = os.environ.get("ENVIRONMENT")
 
 if environment == "production":
-    TOKEN = os.environ["OPENAI_API_KEY"]
-    OPENAI_API_KEY = os.environ["DISCORD_BOT_TOKEN"]
+    TOKEN = os.environ["DISCORD_BOT_TOKEN"]
+    OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 else:
     load_dotenv()
     TOKEN = os.getenv("DISCORD_BOT_TOKEN")
