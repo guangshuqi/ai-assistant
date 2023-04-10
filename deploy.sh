@@ -27,7 +27,8 @@ sudo ln -s /usr/local/bin/python3.9 /usr/bin/python3
 
 # Verify the installed Python 3.9 version
 python3 --version
-
+OPENAI_API_KEY="$1"
+DISCORD_BOT_TOKEN="$2"
 
 # Set environment variables on the EC2 instance
 echo "export ENVIRONMENT=${ENVIRONMENT}" >> ~/.bashrc
