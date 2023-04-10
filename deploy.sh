@@ -1,7 +1,33 @@
 #!/bin/bash
-# Install dependencies
+
+# Update the package list and install the necessary development tools
 sudo yum update -y
-sudo yum install -y python3
+sudo yum groupinstall -y "Development Tools"
+
+# Install the required dependencies for Python 3.9
+sudo yum install -y openssl-devel bzip2-devel libffi-devel
+
+# Download the Python 3.9 source code
+wget https://www.python.org/ftp/python/3.9.0/Python-3.9.0.tgz
+
+# Extract the downloaded archive and change to the extracted directory
+tar xzf Python-3.9.0.tgz
+cd Python-3.9.0
+
+# Configure and build Python 3.9
+./configure --enable-optimizations
+make
+
+# Install Python 3.9
+sudo make install
+
+# Remove the existing python3 link and create a new symbolic link for Python 3.9
+sudo rm -f /usr/bin/python3
+sudo ln -s /usr/local/bin/python3.9 /usr/bin/python3
+
+# Verify the installed Python 3.9 version
+python3 --version
+
 
 # Set environment variables on the EC2 instance
 echo "export ENVIRONMENT=${ENVIRONMENT}" >> ~/.bashrc
