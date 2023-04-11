@@ -1,10 +1,14 @@
 import os
 import discord
 import openai
+import threading
+import queue
 from discord import Intents
 from discord.ext import commands
 from dotenv import load_dotenv
+from search_worker import search_worker
 
+search_queue = queue.Queue() 
 environment = os.environ.get("ENVIRONMENT")
 
 if environment == "production":
@@ -22,9 +26,14 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 openai.api_key = OPENAI_API_KEY
 conversations = {}  # Store conversations per user
 
+# start search worker thread
+worker_thread = threading.Thread(target=search_worker, args=(search_queue, bot))
+worker_thread.start()
+
 async def generate_response(user_id, messages):
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
+        # model="gpt-3.5-turbo",
         messages=messages
     )
     return response.choices[0].message["content"]
@@ -44,7 +53,15 @@ async def on_message(message):
     # Create a new conversation for the user if it doesn't exist
     if user_id not in conversations:
         conversations[user_id] = [
-            {"role": "system", "content": f"You are a helpful assistant. You are chatting with {user_name}."}
+            {
+                "role": "system", 
+                "content": (f"You are a helpful assistant. You are chatting with {user_name}."\
+                "First, provide information to the user. If you do not have needed information, "\
+                "search for this information by outputting the string `[Search Request]` followed by "\
+                "a concise description of needed information."\
+                )
+                
+            }
         ]
 
     # Add user message to conversation
@@ -53,9 +70,14 @@ async def on_message(message):
     response_text = await generate_response(user_id, conversations[user_id])
     conversations[user_id].append({"role": "assistant", "content": response_text})
 
-    await message.channel.send(response_text)
 
-    # This line is important! It allows the bot to process commands.
+    if response_text.startswith("[Search Request]"):
+        search_description = response_text[16:].strip()
+        search_queue.put((user_id, search_description, message.channel))
+        await message.channel.send("Searching for information...")
+    else:
+        await message.channel.send(response_text)
+
     await bot.process_commands(message)
 
 @bot.command(name="ping")
