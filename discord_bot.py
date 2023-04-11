@@ -58,7 +58,8 @@ async def on_message(message):
                 "content": (f"You are a helpful assistant. You are chatting with {user_name}."\
                 "First, provide information to the user. If you do not have needed information, "\
                 "search for this information by outputting the string `[Search Request]` followed by "\
-                "a concise description of needed information."\
+                "a concise description of needed information. You can also ask follow up questions to the user"\
+                "to clarify the information needed."
                 )
                 
             }
