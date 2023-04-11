@@ -74,7 +74,7 @@ async def on_message(message):
     if response_text.startswith("[Search Request]"):
         search_description = response_text[16:].strip()
         search_queue.put((user_id, search_description, message.channel))
-        await message.channel.send("Searching for information...")
+        await message.channel.send(f"**_Searching for information:_** {search_description}")
     else:
         await message.channel.send(response_text)
 
