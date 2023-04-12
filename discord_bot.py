@@ -71,7 +71,8 @@ async def on_message(message):
     # Add user message to conversation
     conversations[user_id].append({"role": "user", "content": message.content})
 
-    response_text, error_message = await generate_response(user_id, conversations[user_id])
+    async with message.channel.typing():
+        response_text, error_message = await generate_response(user_id, conversations[user_id])
 
     if error_message:
         await message.channel.send(f"**Error:** {error_message}")
