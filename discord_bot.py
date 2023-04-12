@@ -3,6 +3,7 @@ import discord
 import openai
 import threading
 import queue
+import textwrap
 from discord import Intents
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -37,9 +38,16 @@ async def send_error_to_channel(error_message):
 
 async def safe_send_message(channel, message):
     try:
-        await channel.send(message)
+        if len(message) <= 2000:
+            await channel.send(message)
+        else:
+            # Split the message on new lines or spaces
+            wrapped_message = textwrap.wrap(message, width=2000, break_long_words=True, replace_whitespace=False)
+            for chunk in wrapped_message:
+                await channel.send(chunk)
     except Exception as e:
         await send_error_to_channel(f"Message send error: {str(e)}")
+
         
 async def generate_response(user_id, messages):
     try:
