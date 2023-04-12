@@ -30,6 +30,17 @@ conversations = {}  # Store conversations per user
 worker_thread = threading.Thread(target=search_worker, args=(search_queue, bot))
 worker_thread.start()
 
+async def send_error_to_channel(error_message):
+    error_channel_id = 1095546338340515980  # Replace with the actual channel ID you copied
+    error_channel = bot.get_channel(error_channel_id)
+    await error_channel.send(f"**Error:** {error_message}")
+
+async def safe_send_message(channel, message):
+    try:
+        await channel.send(message)
+    except Exception as e:
+        await send_error_to_channel(f"Message send error: {str(e)}")
+        
 async def generate_response(user_id, messages):
     try:
         response = openai.ChatCompletion.create(
@@ -75,16 +86,16 @@ async def on_message(message):
         response_text, error_message = await generate_response(user_id, conversations[user_id])
 
     if error_message:
-        await message.channel.send(f"**Error:** {error_message}")
+        await safe_send_message(message.channel, f"**Error:** {error_message}")
     else:
         conversations[user_id].append({"role": "assistant", "content": response_text})
 
         if response_text.startswith("[Search Request]"):
             search_description = response_text[16:].strip()
             search_queue.put((user_id, search_description, message.channel))
-            await message.channel.send(f"**_Searching for information:_** {search_description}")
+            await safe_send_message(message.channel, f"**_Searching for information:_** {search_description}")
         else:
-            await message.channel.send(response_text)
+            await safe_send_message(message.channel, response_text)
 
     await bot.process_commands(message)
 
