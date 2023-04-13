@@ -30,7 +30,7 @@ source ~/.bashrc
 
 # Replace these variables with your actual values
 BOT_DIRECTORY="/home/ec2-user/ai-assistant"
-BOT_SCRIPT="discord_bot.py"
+BOT_SCRIPT="bot/main.py"
 
 # Go to the bot directory and restart the bot
 cd $BOT_DIRECTORY

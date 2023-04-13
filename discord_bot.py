@@ -66,7 +66,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    if message.author == bot.user:
+    if message.author == bot.user or message.channel.id == 1095546338340515980:
         return
 
     user_id = message.author.id
