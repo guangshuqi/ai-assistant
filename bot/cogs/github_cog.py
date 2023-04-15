@@ -26,7 +26,7 @@ class GithubCog(commands.Cog):
         decoded_content = file_content.decoded_content.decode("utf-8")
         print(decoded_content)
         # Send the response
-        content = f"File content of {file_path}:\n```{decoded_content}```"
+        content = f"File content of {file_path}:\n```\n{decoded_content}\n```"
         user_id = ctx.message.mentions[0].id
         message_history = conversations[user_id]
         last_assistant_message = message_history[-1]
