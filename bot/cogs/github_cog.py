@@ -73,14 +73,14 @@ class GithubCog(commands.Cog):
         await ctx.send(f"pull request {pr_title} created")
     
     @commands.command()
-    async def editfile(self, ctx, file_path, file_content):
+    async def editfile(self, ctx, file_path, file_content, commit_message):
         '''
         edit a file in a GitHub repository.
         input: file_path, file_content
         '''
         repo = self.github.get_repo(f"{REPO_OWNER}/{REPO_NAME}")
         file = repo.get_contents(file_path)
-        repo.update_file(file.path, "update file", file_content, file.sha)
+        repo.update_file(file.path, commit_message, file_content, file.sha)
         await ctx.send(f"file {file_path} updated")
 
     @commands.command()
