@@ -37,6 +37,7 @@ jobs:
         ENVIRONMENT: production
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         HOST: ${{ secrets.EC2_HOST }}
       run: |

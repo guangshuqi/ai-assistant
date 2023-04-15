@@ -20,7 +20,7 @@ python3 --version
 echo "export ENVIRONMENT=${ENVIRONMENT}" >> ~/.bashrc
 echo "export OPENAI_API_KEY=${OPENAI_API_KEY}" >> ~/.bashrc
 echo "export DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}" >> ~/.bashrc
-
+echo "export GITHUB_TOKEN=${GITHUB_TOKEN}" >> ~/.bashrc
 # Reload the .bashrc file
 source ~/.bashrc
 
