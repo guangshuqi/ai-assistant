@@ -3,7 +3,7 @@ from discord.ext import commands
 from github import Github
 from config import GITHUB_TOKEN
 from utils.message_splitter import split
-
+from store.conversations import conversations
 REPO_OWNER = "guangshuqi"
 REPO_NAME = "ai-assistant"
 class GithubCog(commands.Cog):
@@ -27,6 +27,10 @@ class GithubCog(commands.Cog):
         print(decoded_content)
         # Send the response
         content = f"File content of {file_path}:\n```{decoded_content}```"
+        user_id = ctx.message.mentions[0].id
+        message_history = conversations[user_id]
+        last_assistant_message = message_history[-1]
+        last_assistant_message['content'] = last_assistant_message['content'] + '\n' + content
         for chunk in split(content):
             await ctx.send(chunk)
 
