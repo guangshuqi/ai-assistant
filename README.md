@@ -1,2 +1,1 @@
-# ai-assistant
-ai-assistant that helps you submit job applications, manage your tweeter profile, answer emails, create resumes
+"# ai-assistant\nai-assistant that helps you submit job applications, manage your tweeter profile, answer emails, create resumes\n\nThe AI-assistant currently have access to GitHub APIs, so you can chat with it to update its own code."
