@@ -1,1 +1,1 @@
-conversations = {} 
+# A dictionary that stores conversation sessions.\n# Key: User ID\n# Value: Array of messages\nconversations = {}
