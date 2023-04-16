@@ -1,28 +1,52 @@
 from discord import Intents
+import discord
 import os
 import asyncio
 import inspect
 from discord.ext import commands
-from config import TOKEN, ERROR_CHANNEL_ID
+from config import TOKEN, ERROR_CHANNEL_ID, AI_CHANNEL
 from utils.openai_handler import generate_response, create_message
 from utils.error_handler import send_error_to_channel
 from utils.prompt_builder import build_system_prompt
 from utils.message_splitter import split
-from store.conversations import conversations
+from store.conversations import create_conversation, get_conversation, update_conversation
+from components.chat_setup import ChatSettingView
+
 intents = Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="/", intents=intents)
 
  # A dictionary to store conversations per user
+def is_allowed_channel(ctx):
+    return ctx.channel.id == AI_CHANNEL
 
 @bot.event
 async def on_ready():
     print(f"We have logged in as {bot.user}")
 
+@bot.command()
+@commands.check(is_allowed_channel)
+async def chat(ctx):
+    user_name = ctx.author.name
+    user_id = ctx.author.id
+    view = ChatSettingView(ctx, user_name, user_id)
+    await ctx.send('Select temperature and enter your prompt:', view=view)
+
+@bot.command()
+async def resetchat(ctx):
+    existing_conversation = get_conversation(ctx.author.id)
+    if not existing_conversation:
+        await ctx.send('No chat history to reset')
+        return
+    user_id = ctx.author.id
+    existing_conversation['conversation'] = []
+    update_conversation(user_id, existing_conversation)
+    await ctx.send(f'Chat history reset for user: {ctx.author.name}')
+
 @bot.event
 async def on_message(message):
     try:
-        if message.content.startswith("!"):
+        if message.content.startswith("/"):
             print('executing command')
             if message.author == bot.user:
                 ctx = await bot.get_context(message)
@@ -48,14 +72,19 @@ async def on_message(message):
         user_name = message.author.name
         system_prompt = build_system_prompt(user_name, bot)
         print(system_prompt)
-        if user_id not in conversations:
-            conversations[user_id] = [create_message("system", system_prompt)]
+        if not get_conversation(user_id):
+            conversaton = [create_message("system", system_prompt)]
+            create_conversation(user_id, conversaton)
+        
 
         prompt = message.content
-        conversations[user_id].append(create_message("user", prompt))
+        conversaton = get_conversation(user_id)
+        conversaton_history = conversaton['conversation']
+        conversaton_history.append(create_message("user", prompt))
         async with message.channel.typing():
-            response = await generate_response(conversations[user_id])
-            conversations[user_id].append(create_message("assistant", response))
+            response = await generate_response(conversaton_history)
+            conversaton_history.append(create_message("assistant", response))
+            update_conversation(user_id, conversaton)
             # Split the response into multiple messages using the textwrap module
             wrapped_response = split(response)
             for chunk in wrapped_response:
