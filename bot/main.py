@@ -45,6 +45,9 @@ async def resetchat(ctx):
 
 @bot.event
 async def on_message(message):
+    # if not dm or in the allowed channel, ignore
+    if message.channel.type != discord.ChannelType.private and not is_allowed_channel(message):
+        return
     try:
         if message.content.startswith("/"):
             print('executing command')

@@ -7,7 +7,6 @@ sudo yum update -y
 # Install Python 3.9
 sudo yum install -y python3.9
 
-aws configure
 # Remove the existing python3 link and create a new symbolic link for Python 3.9
 sudo rm -f /usr/bin/python3
 # Create a new symbolic link for 'python3' pointing to 'python3.9'
