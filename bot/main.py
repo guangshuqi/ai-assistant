@@ -66,6 +66,9 @@ async def on_message(message):
     if message.channel.type != discord.ChannelType.private and not is_allowed_channel(message):
         if message.channel.type !=discord.ChannelType.public_thread:
             return
+        # ignore if owner of thread is not the bot
+        elif message.channel.owner_id != bot.user.id:
+            return
     try:
         if message.content.startswith("/"):
             print('executing command')
@@ -118,7 +121,8 @@ async def on_message(message):
             # Split the response into multiple messages using the textwrap module
             wrapped_response = split(response)
             for chunk in wrapped_response:
-                await message.reply(chunk)
+                # await message.reply(chunk)
+                await message.channel.send(chunk)
     except Exception as e:
         await send_error_to_channel(bot, str(e))
 

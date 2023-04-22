@@ -10,14 +10,14 @@ async def generate_response(conversation, model="gpt-4"):
         temperature = float(conversation["temperature"])
     system_prompt = conversation.get("system prompt", "You are a helpful discord bot")
     messages[0]= create_message("system", system_prompt)
-    print(messages)
+    # print(messages)
     response = await openai.ChatCompletion.acreate(
         model=model,
         messages=messages,
         temperature=temperature,
     )
     reply = response.choices[0].message["content"]
-    print(reply)
+    # print(reply)
     return reply
 
 def create_message(role, content):
