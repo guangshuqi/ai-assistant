@@ -11,8 +11,8 @@ def get_conversation(thread_id):
     else:
         return None
     
-def update_conversation(thread_id, conversation):
+def update_conversation(conversation):
     table.put_item(Item=conversation)
 
-def create_conversation(thread_id, conversation):
-    table.put_item(Item={'thread_id': str(thread_id), 'conversation': conversation})
+def create_conversation(conversation):
+    table.put_item(Item=conversation)
