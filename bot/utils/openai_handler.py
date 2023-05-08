@@ -8,8 +8,8 @@ async def generate_response(conversation, model="gpt-4"):
         temperature = 0.5
     else:
         # temperature can only between 0 - 1
-        temperature = min(1,(conversation["temperature"]))
-        temperature = max(0,(conversation["temperature"]))
+        temperature = min(1,float((conversation["temperature"])))
+        temperature = max(0,float((conversation["temperature"])))
     system_prompt = conversation.get("system prompt", "You are a helpful discord bot")
     if messages[0]['role'] == 'system':
         messages[0]= create_message("system", system_prompt, "GPT-4")
