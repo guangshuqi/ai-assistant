@@ -35,7 +35,7 @@ async def chat(ctx, temperature: float, system_prompt: str):
             "thread_id": str(thread.id),
             "system prompt": system_prompt,
             "temperature": str(temperature),
-            "messages": [create_message("system", system_prompt)]
+            "messages": [create_message("system", system_prompt, "GPT-4")]
         }
         create_conversation(conversation)
         await thread.send(f"Temperature: {temperature}\nSystem Prompt: {system_prompt}\n\nPlease send a message in this thread to start a conversation with GPT-4!")
@@ -101,7 +101,7 @@ async def on_message(message):
         user_name = message.author.name
         if not get_conversation(conversation_id):
             system_prompt = build_system_prompt(user_name, bot)
-            message_history = [create_message("system", system_prompt)]
+            message_history = [create_message("system", system_prompt, "GPT-4")]
             conversation = {
                 "thread_id": conversation_id,
                 "system prompt": system_prompt,
@@ -113,10 +113,10 @@ async def on_message(message):
 
         prompt = message.content
         conversation = get_conversation(conversation_id)
-        conversation['messages'].append(create_message("user", prompt))
+        conversation['messages'].append(create_message("user", prompt, user_name))
         async with message.channel.typing():
             response = await generate_response(conversation)
-            conversation['messages'].append(create_message("assistant", response))
+            conversation['messages'].append(create_message("assistant", response, "GPT-4"))
             update_conversation(conversation)
             # Split the response into multiple messages using the textwrap module
             wrapped_response = split(response)
